@@ -1,0 +1,185 @@
+.about-me {
+    display: flex;
+    justify-content: center;
+}
+
+.about-me__container {
+    width: 1140px;
+    margin-top: 110px;
+}
+
+.about-me__header__title {
+    margin: 0;
+}
+
+.student-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.student-info {
+    flex-basis: 80%;
+}
+
+.student-info-header {
+    font-family: Inter;
+    font-size: 50px;
+    font-weight: 400;
+    line-height: 58px;
+    letter-spacing: -0.04em;
+    text-align: left;
+    margin: 0;
+    margin-top: 66px;
+}
+
+.student-info-preheader {
+    font-family: Inter;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0px;
+    text-align: left;
+    margin-top: 18px;
+    margin-bottom: 26px;
+}
+
+.student-info-text {
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: 0px;
+    text-align: left;
+    max-width: 599px;
+    margin: 0;
+}
+
+.student-picture-container {
+    flex-basis: 20%;
+    margin-top: 66px;
+}
+
+.student-picture {
+    background-image: url('../../images/student.png');
+    height: 327px;
+    width: 270px;
+    border-radius: 10px;
+}
+
+.student-info-footer-link {
+    text-decoration: none;
+    color: #fff;
+    margin-top: 99px;
+    display: inline-block;
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 17px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+
+@media (max-width: 1150px) {
+    .about-me__container {
+        padding: 0 50px;
+        margin-top: 90px;
+        margin-bottom: 70px;
+    }
+
+    .student-info-header {
+        font-family: Inter;
+        font-size: 40px;
+        font-weight: 400;
+        line-height: 40px;
+        letter-spacing: -0.04em;
+        text-align: left;
+    }
+
+    .student-info-preheader {
+        font-family: Inter;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 18px;
+        letter-spacing: 0px;
+        text-align: left;
+        margin-top: 16px;
+        margin-bottom: 20px;
+    }
+
+    .student-info-text {
+        font-family: Inter;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 18px;
+        letter-spacing: 0px;
+        text-align: left;
+        max-width: 364px;
+    }
+
+    .student-picture {
+        height: 307px;
+        width: 255px;
+    }
+
+    .student-picture-container {
+        margin-top: 64px;
+    }
+
+    .student-info-footer-link {
+        margin-top: 86px;
+    }
+}
+
+@media (max-width: 530px) {
+    .student-container {
+        flex-direction: column-reverse;
+    }
+
+    .about-me__container {
+        padding: 0 14px;
+        margin-top: 70px;
+    }
+
+    .student-picture {
+        height: 352px;
+        width: 292px;
+    }
+
+    .student-picture-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .student-info-header {
+        font-family: Inter;
+        font-size: 30px;
+        font-weight: 400;
+        line-height: 36px;
+        letter-spacing: -0.04em;
+        text-align: left;
+        margin-top: 40px;
+    }
+
+    .student-info-text {
+        font-family: Inter;
+        font-size: 11px;
+        font-weight: 400;
+        line-height: 16px;
+        letter-spacing: 0px;
+        text-align: left;
+    }
+
+    .student-info-preheader {
+        font-family: Inter;
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 16px;
+        letter-spacing: 0px;
+        text-align: left;
+    }
+
+    .student-info-footer-link {
+        margin-top: 40px;
+    }
+}
