@@ -9,7 +9,7 @@ const Profile = () => {
         <>
             <Header isAuthed={true} />
 
-            <div className="profile">
+            <section className="profile">
                 <h2 className="profile__title">Привет, Виталий!</h2>
 
                 <div className="profile__info">
@@ -32,7 +32,7 @@ const Profile = () => {
                         </li>
                     </ul>
 
-            </div>
+            </section>
         </>
     );
 };

@@ -4,7 +4,7 @@ import "./NavTab.css";
 const NavTab = () => {
   return (
     <div className="navtab">
-      <ul className="navtab-links navtab-links__header">
+      <ul className="navtab-links navtab-links_header">
         <li className="navtab-links__container">
           <a href="#about" className="navtab-link">О проекте</a>
         </li>

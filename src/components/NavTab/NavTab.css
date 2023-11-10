@@ -5,7 +5,7 @@
 .navtab-links {
     display: grid;
     gap: 10px;
-    grid-template-columns: repeat(auto-fit,90px);
+    grid-template-columns: repeat(auto-fit,80px);
     justify-content: center;
     margin: 0 auto;
     padding: 0;
@@ -52,7 +52,7 @@
 }
 
 .navtab-techs__link {
-    font-family: Inter;
+    font-family: inter, Arial, sans-serif;
     font-size: 14px;
     font-weight: 400;
     line-height: 17px;
@@ -63,7 +63,7 @@
 
 }
 
-.navtab-links__header {
+.navtab-links_header {
     display: flex;
     gap: 10px;
 }
@@ -74,7 +74,7 @@
     }
 
     .navtab-techs__link {
-        font-family: Inter;
+        font-family: inter, Arial, sans-serif;
         font-size: 12px;
         font-weight: 400;
         line-height: 15px;
@@ -84,7 +84,7 @@
 
     .navtab-links {
         justify-content: center;
-        gap: 3px;
+        gap: 10px;
     }
 
     .techs-info__title {
@@ -92,14 +92,20 @@
     }
 }
 
+@media (min-width: 768px) {
+    .navtab-links {
+        gap: 20px;
+    }
+}
+
 @media (max-width: 350px) {
-    .navtab-links__container {
+        .navtab-links__container {
         height: 26px;
         width: 82px;
     }
 
     .navtab-link {
-        font-family: Inter;
+        font-family: inter, Arial, sans-serif;
         font-size: 10px;
         font-weight: 500;
         line-height: 16px;

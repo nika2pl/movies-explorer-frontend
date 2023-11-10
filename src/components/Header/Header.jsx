@@ -8,11 +8,11 @@ import Dropdown from "../Dropdown/Dropdown";
 
 const Header = (props) => {
   return (
-    <div className="header">
+    <header className="header">
       <div className="header__container">
 
         <div className="header__logo-container">
-          <NavLink to="/"><img src={Logo} alt="My Happy SVG" /></NavLink>
+          <NavLink to="/"><img src={Logo} alt="Movies Exlporer" /></NavLink>
         </div>
 
         {props.isAuthed ?
@@ -34,17 +34,17 @@ const Header = (props) => {
             <div className="header__auth-container">
               <ul className="header__links header__links_auth">
                 <li>
-                  <NavLink className="header__link header__link__signup" to="/signup">Регистрация</NavLink>
+                  <NavLink className="header__link header__link_signup" to="/signup">Регистрация</NavLink>
                 </li>
                 <li>
-                  <NavLink className="header__link header__link__signin" to="/signin">Войти</NavLink>
+                  <NavLink className="header__link header__link_signin" to="/signin">Войти</NavLink>
                 </li>
               </ul>
             </div>
           </>
         }
       </div>
-    </div>
+    </header>
   );
 };
 

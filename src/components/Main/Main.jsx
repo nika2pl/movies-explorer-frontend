@@ -11,10 +11,14 @@ const Main = () => {
   return (
     <>
       <Header isAuthed={false} />
-      <Promo />
-      <AboutProject />
-      <Techs />
-      <AboutMe />
+
+      <main>
+        <Promo />
+        <AboutProject />
+        <Techs />
+        <AboutMe />
+      </main>
+
       <Footer />
     </>
   );

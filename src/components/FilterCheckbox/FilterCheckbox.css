@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     padding-bottom: 40px;
-    padding-top: 40px;
+    padding-top: 30px;
 }
 
 /* The switch - the box around the slider */
@@ -69,7 +69,7 @@
 }
 
 .checkbox-text {
-    font-family: Inter;
+    font-family: inter, Arial, sans-serif;
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;

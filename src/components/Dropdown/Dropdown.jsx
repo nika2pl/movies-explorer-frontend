@@ -5,18 +5,17 @@ import { NavLink } from "react-router-dom";
 const Dropdown = () => {
     const [isDropdownMenuOpened, setisDropdownMenuOpened] = useState(false);
 
-    function handleClick() {
+    function toogleDropdownMenu() {
         setisDropdownMenuOpened(isDropdownMenuOpened => !isDropdownMenuOpened);
-        console.log(isDropdownMenuOpened)
     }
 
     return (
         <>
-            <div className="dropdown-button" onClick={handleClick}>
+            <div className="dropdown-button" onClick={toogleDropdownMenu}>
             </div>
 
             <div className={"dropdown-menu " + (isDropdownMenuOpened ? 'dropdown-menu__opened' : ' ')}>
-                <button className="dropdown-menu__close-button" onClick={handleClick}/>
+                <button className="dropdown-menu__close-button" onClick={toogleDropdownMenu}/>
 
                 <ul className="dropdown-menu__links">
                     <li>

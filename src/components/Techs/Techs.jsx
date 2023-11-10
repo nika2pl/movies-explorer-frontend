@@ -5,7 +5,7 @@ import "../Title/Title.css";
 
 const Techs = () => {
     return (
-        <div className="techs" id="techs">
+        <section className="techs" id="techs">
             <div className="techs__container">
                 <h2 className="title">Технологии</h2>
                 <div className="techs-info">
@@ -39,7 +39,7 @@ const Techs = () => {
                     </ul>
                 </div>
             </div>
-        </div>
+        </section>
     );
 };
 

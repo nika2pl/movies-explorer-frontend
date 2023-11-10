@@ -40,14 +40,16 @@ const Movies = () => {
     <>
       <Header isAuthed={true} />
 
-      <SearchForm />
+      <main>
+        <SearchForm />
 
-      {isLoading ? (
-        <Preloader />
-      ) : (
-        <MoviesCardList movies={moviesSample} isSavedMovies={false} />
-      )}
-
+        {isLoading ? (
+          <Preloader />
+        ) : (
+          <MoviesCardList movies={moviesSample} isSavedMovies={false} />
+        )}
+      </main>
+      
       <Footer />
     </>
   );

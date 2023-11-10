@@ -4,7 +4,7 @@
     margin-top: 80px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(338px, max-content));
-    gap: 60px 30px;
+    gap: 45px 30px;
     align-items: center;
     justify-content: center;
 }
@@ -14,6 +14,7 @@
     width: 100%;
     justify-content: center;
     margin-top: 50px;
+    margin-bottom: 80px;
 }
 
 .card-more-button {
@@ -26,7 +27,7 @@
     border-radius: 6px;
     cursor: pointer;
     
-    font-family: Inter;
+    font-family: inter, Arial, sans-serif;
     font-size: 12px;
     font-weight: 500;
     line-height: 15px;

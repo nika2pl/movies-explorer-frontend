@@ -23,23 +23,25 @@ const Movies = () => {
   }, [isLoading]);
 
   const moviesSample = [
-    { title: '33', time: '1h 2m', picture: pic, isSaved: true },
-    { title: '101 долматинец', time: '1h 2m', picture: pic, isSaved: true },
-    { title: 'Дисней', time: '1h 2m', picture: pic, isSaved: true },
-    { title: 'Нетфликс', time: '1h 2m', picture: pic, isSaved: true }
+    { title: '500 дней лета', time: '1h 2m', picture: pic, isSaved: true },
+    { title: '500 дней лета', time: '1h 2m', picture: pic, isSaved: true },
+    { title: '500 дней лета', time: '1h 2m', picture: pic, isSaved: true },
+    { title: '500 дней лета', time: '1h 2m', picture: pic, isSaved: true }
   ];
 
   return (
     <>
       <Header isAuthed={true} />
 
-      <SearchForm />
+      <main>
+        <SearchForm />
 
-      {isLoading ? (
-        <Preloader />
-      ) : (
-        <MoviesCardList movies={moviesSample} isSavedMovies={true} />
-      )}
+        {isLoading ? (
+          <Preloader />
+        ) : (
+          <MoviesCardList movies={moviesSample} isSavedMovies={true} />
+        )}
+      </main>
 
       <Footer />
     </>

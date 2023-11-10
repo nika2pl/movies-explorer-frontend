@@ -5,7 +5,7 @@ import "../Title/Title.css";
 const AboutProject = () => {
   return (
     <>
-      <div className="about-project" id="about">
+      <section className="about-project" id="about">
         <div className="about-project__container">
           <h2 className="title">О проекте</h2>
 
@@ -44,7 +44,7 @@ const AboutProject = () => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 };
