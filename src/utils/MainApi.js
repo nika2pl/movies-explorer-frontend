@@ -1,6 +1,6 @@
 export default class Api {
     constructor(options) {
-        this._url = 'http://api.moovie.nomoredomainsrocks.ru/' || options.baseUrl
+        this._url = 'https://api.moovie.nomoredomainsrocks.ru/' || options.baseUrl
         this._headers = {
             "Content-Type": "application/json",
         }
