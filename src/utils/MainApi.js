@@ -1,7 +1,9 @@
 export default class Api {
     constructor(options) {
-        this._url = options.baseUrl
-        this._headers = options.headers
+        this._url = 'http://api.moovie.nomoredomainsrocks.ru/' || options.baseUrl
+        this._headers = {
+            "Content-Type": "application/json",
+        }
     }
 
     _checkResponse(res) {
@@ -54,7 +56,7 @@ export default class Api {
             method: 'PATCH',
             credentials: "include",
             headers: this._headers,
-            body: JSON.stringify(data)      
+            body: JSON.stringify(data)
         }).then(this._checkResponse)
     }
 
@@ -63,7 +65,7 @@ export default class Api {
             method: 'POST',
             credentials: "include",
             headers: this._headers,
-            body: JSON.stringify(data)      
+            body: JSON.stringify(data)
         }).then(this._checkResponse)
     }
 

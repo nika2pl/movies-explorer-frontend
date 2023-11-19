@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import { Route, Routes } from 'react-router-dom';
 
 import Main from "../Main/Main";
@@ -14,15 +13,10 @@ import Api from '../../utils/MainApi'
 import ProtectedRoute from '../../components/ProtectedRoute/ProtectedRoute';
 
 import "./App.css";
-const api = new Api({
-  baseUrl: 'http://localhost:3000',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+const api = new Api();
 
 function App() {
-  const jwt = localStorage.getItem('jwt');
+  const jwt = localStorage.getItem('jwt') || '';
   let isLoggedInDefault = false;
 
   if(jwt.length > 0){

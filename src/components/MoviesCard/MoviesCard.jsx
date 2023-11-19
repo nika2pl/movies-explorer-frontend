@@ -4,12 +4,7 @@ import "./MoviesCard.css";
 import Api from '../../utils/MainApi'
 
 const MoviesCard = (props) => {
-    const api = new Api({
-        baseUrl: 'http://localhost:3000',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
+    const api = new Api();
 
     const getTimeFromMins = (mins) => {
         let hours = Math.trunc(mins / 60);

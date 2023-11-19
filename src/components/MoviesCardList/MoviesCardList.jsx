@@ -6,12 +6,7 @@ import Api from '../../utils/MainApi'
 const MoviesCardList = (props) => {
     const [moviesData, setMoviesData] = useState([]);
 
-    const api = new Api({
-        baseUrl: 'http://localhost:3000',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
+    const api = new Api();
 
     useEffect(() => {
         api.savedMovies().then((data) => {
