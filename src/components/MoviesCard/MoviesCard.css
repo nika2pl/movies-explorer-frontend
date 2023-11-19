@@ -1,13 +1,14 @@
 .card-container {
     position: relative;
     display: inline-block;
+    color: #fff;
+    text-decoration: none;
 }
 
 .card-container img {
     display: block;
-    width: 100%;
-    height: auto;
     cursor: pointer;
+    object-fit: fill;
 }
 
 .card-container:hover .save-button,
@@ -99,10 +100,22 @@
     width: 52px;
 }
 
+.cord-info-trailer-link {
+    color: #fff;
+    text-decoration: none;
+}
+
+@media (min-width: 768px) {
+    .card-container img {
+        width: 360px;
+        height: 201px;
+    }
+}
+
 @media (max-width: 768px) {
-    .card-container {
-        max-width: 339px;
-        max-height: 190px;
+    .card-container img {
+        width: 339px;
+        height: 190px;
     }
 
     .card {
@@ -121,6 +134,7 @@
 
 @media (max-width: 360px) {
     .card-container img {
-        max-width: 300px;
+        width: 300px;
+        height: 168px;
     }
 }

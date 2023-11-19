@@ -6,7 +6,7 @@ import Logo from "../../images/logo.svg";
 import Navigation from "../Navigation/Navigation";
 import Dropdown from "../Dropdown/Dropdown";
 
-const Header = (props) => {
+const Header = ({isLoggedIn}) => {
   return (
     <header className="header">
       <div className="header__container">
@@ -15,7 +15,7 @@ const Header = (props) => {
           <NavLink to="/"><img src={Logo} alt="Movies Exlporer" /></NavLink>
         </div>
 
-        {props.isAuthed ?
+        {isLoggedIn ?
           <>
             <div className="header__authed">
               <Navigation />

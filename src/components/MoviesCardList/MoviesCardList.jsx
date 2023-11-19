@@ -1,11 +1,58 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import "./MoviesCardList.css";
 import MoviesCard from "../MoviesCard/MoviesCard";
+import Api from '../../utils/MainApi'
 
 const MoviesCardList = (props) => {
+    const [moviesData, setMoviesData] = useState([]);
+
+    const api = new Api({
+        baseUrl: 'http://localhost:3000',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    useEffect(() => {
+        api.savedMovies().then((data) => {
+            setMoviesData(data)
+        }).catch((err) => {
+            console.log(err);
+        })
+    }, []);
+
     const movies = props.movies.map((item, i) => {
+        let isSavedId, isSaved;
+
+        if (props.isSavedMovies) {
+            isSaved = true;
+            isSavedId = item._id;
+        } else {
+            isSaved = moviesData.some((movie) => movie.movieId === item.id);
+
+            if (isSaved) {
+                isSavedId = moviesData.filter((movie) => movie.movieId === item.id)[0]._id;
+            }
+        }
+
         return (
-            <MoviesCard title={item.title} time={item.time} picture={item.picture} isSaved={item.isSaved} isSavedMovies={props.isSavedMovies} />
+            <MoviesCard
+                country={item.country}
+                director={item.director}
+                movieId={item.movieId ? item.movieId.toString() : item.id.toString()}
+                year={item.year}
+                description={item.description}
+                nameEN={item.nameEN}
+                nameRU={item.nameRU}
+                thumbnail={item.thumbnail || "https://api.nomoreparties.co" + item.image.formats.thumbnail.url}
+                duration={item.duration}
+                image={item.image.url ? "https://api.nomoreparties.co" + item.image.url : item.image}
+                trailerLink={item.trailerLink}
+                isSaved={isSaved}
+                isSavedId={isSavedId}
+                isSavedMovies={props.isSavedMovies}
+                key={i}
+            />
         );
     });
 
@@ -14,9 +61,9 @@ const MoviesCardList = (props) => {
             <div className="card-list">
                 {movies}
             </div>
-            {movies.length > 6 && (
-                <div class="card-more-button-container">
-                    <div class="card-more-button">Ещё</div>
+            {props.isMoreActive && (
+                <div className="card-more-button-container">
+                    <button className="card-more-button" onClick={props.moreCardsHandler}>Ещё</button>
                 </div>
             )}
         </>

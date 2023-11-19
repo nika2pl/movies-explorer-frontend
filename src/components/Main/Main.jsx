@@ -7,10 +7,10 @@ import Techs from "../Techs/Techs";
 import AboutMe from "../AboutMe/AboutMe";
 import Footer from "../Footer/Footer";
 
-const Main = () => {
+const Main = ({isLoggedIn}) => {
   return (
     <>
-      <Header isAuthed={false} />
+      <Header isLoggedIn={isLoggedIn} />
 
       <main>
         <Promo />

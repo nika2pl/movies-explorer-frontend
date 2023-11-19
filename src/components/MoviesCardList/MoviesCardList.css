@@ -19,6 +19,8 @@
 
 .card-more-button {
     border: 1px solid #424242;
+    background: #202020;
+    color: #fff;
     display: flex;
     height: 39px;
     width: 320px;
@@ -26,7 +28,6 @@
     justify-content: center;
     border-radius: 6px;
     cursor: pointer;
-    
     font-family: inter, Arial, sans-serif;
     font-size: 12px;
     font-weight: 500;
