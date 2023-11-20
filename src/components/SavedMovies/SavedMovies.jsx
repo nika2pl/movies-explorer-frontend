@@ -48,7 +48,7 @@ const Movies = ({ currentUser, isLoggedIn }) => {
 
     renderCards(showMovies)
   }
-  
+
   const handleCheckbox = async (event) => {
     const shortsState = event.target.checked;
     const showMovies = Filter.shorts(shortsState, moviesDataFetched);
@@ -64,6 +64,23 @@ const Movies = ({ currentUser, isLoggedIn }) => {
     } else if (!shortsState) {
       renderCards(moviesDataFetched);
     }
+  }
+
+  function handleDeleteMovie(e) {
+    let savedId = e.target.dataset.cardid;
+
+    api.deleteMovie(savedId).then((data) => {
+      let r = moviesData.filter((m) => m._id !== savedId);
+
+      renderCards(r);
+
+      setFilteredMoviesData(r);
+      setMoviesData(r);
+      setMoviesDataFetched(r);
+    }).catch((err) => {
+      console.log(err)
+    })
+
   }
 
   const renderCards = async (showMovies) => {
@@ -112,6 +129,7 @@ const Movies = ({ currentUser, isLoggedIn }) => {
             movies={filteredMoviesData}
             isSavedMovies={true}
             isMoreActive={false}
+            handleDeleteMovie={handleDeleteMovie}
           />
         )}
       </main>

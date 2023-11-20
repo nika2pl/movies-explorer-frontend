@@ -7,7 +7,7 @@ const MoviesCardList = (props) => {
     const [moviesData, setMoviesData] = useState([]);
 
     const api = new Api();
-
+    
     useEffect(() => {
         api.savedMovies().then((data) => {
             setMoviesData(data)
@@ -29,9 +29,10 @@ const MoviesCardList = (props) => {
                 isSavedId = moviesData.filter((movie) => movie.movieId === item.id)[0]._id;
             }
         }
-
+        
         return (
             <MoviesCard
+                cardId={i}
                 country={item.country}
                 director={item.director}
                 movieId={item.movieId ? item.movieId.toString() : item.id.toString()}
@@ -46,7 +47,7 @@ const MoviesCardList = (props) => {
                 isSaved={isSaved}
                 isSavedId={isSavedId}
                 isSavedMovies={props.isSavedMovies}
-                key={i}
+                handleDeleteMovie={props.handleDeleteMovie}
             />
         );
     });

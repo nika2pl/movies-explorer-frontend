@@ -5,7 +5,7 @@ import Api from '../../utils/MainApi'
 
 const MoviesCard = (props) => {
     const api = new Api();
-
+     
     const getTimeFromMins = (mins) => {
         let hours = Math.trunc(mins / 60);
         let minutes = mins % 60;
@@ -32,7 +32,9 @@ const MoviesCard = (props) => {
 
     const {
         isSavedMovies,
-        isSavedId
+        isSavedId,
+        cardId,
+        handleDeleteMovie
     } = props;
 
     useEffect(() => {
@@ -52,26 +54,23 @@ const MoviesCard = (props) => {
             api.deleteMovie(savedId).then((data) => {
                 save_icon = <span className="saved-button" onClick={handleSaveMovie}></span>
                 setIsSaved(false);
-                if (isSavedMovies) {
-                    let card = event.target.parentNode.parentNode;
-                    card.remove();
-                }
             }).catch((err) => {
                 console.log(err)
             })
         }
     }
+    
     let saved_icon;
 
     saved_icon = <span className="saved-button" onClick={handleSaveMovie}></span>
     save_icon = <span className="save-button" onClick={handleSaveMovie}>Сохранить</span>
 
     if (isSavedMovies) {
-        saved_icon = <span className="delete-button" onClick={handleSaveMovie}></span>
-    }
+        saved_icon = <span className="delete-button" data-cardid={isSavedId} onClick={handleDeleteMovie}></span>
+    } 
 
     return (
-        <div className="card">
+        <div className="card1" key={cardId}>
             <span className="card-container">
                 <a href={movieData.trailerLink} className="cord-info-trailer-link" target="_blank" rel="noreferrer">
                     <img src={movieData.image} alt={movieData.nameRU} />
