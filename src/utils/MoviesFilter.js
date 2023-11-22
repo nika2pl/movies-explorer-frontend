@@ -1,15 +1,3 @@
-const shorts = function (shortsState, movies) {
-
-  let showMovies = movies.filter((movie) => {
-    if (shortsState) {
-      return movie.duration < 40;
-    } else {
-      return movie;
-    }
-  });
-
-  return showMovies;
-}
 
 const query = function (shortsState, query, movies) {
   let showMovies = movies.filter((movie) => {
@@ -27,6 +15,5 @@ const query = function (shortsState, query, movies) {
 }
 
 export default {
-  shorts,
   query
 }

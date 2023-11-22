@@ -1,54 +1,49 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useForm } from 'react-hook-form';
-
-import Api from '../../utils/MainApi'
 import Alert from "../Alert/Alert";
-
 import "../Auth/Auth.css";
 import "./Login.css";
 import Logo from "../../images/logo.svg";
 
-const Login = (props) => {
-    const api = new Api({
-        baseUrl: 'http://localhost:3000',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
+import {
+    SYMBOLS_MIN,
+    EMAIL_NOT_VALID,
+    FIELD_REQUIRED
+} from "../../utils/Messages";
 
-    const { setCurrentUser, setIsLoggedIn } = props;
-
+const Login = ({ setCurrentUser, setIsLoggedIn, handleSignIn, handleGetUserInfo }) => {
     const email = React.useRef();
     const password = React.useRef();
     const navigate = useNavigate();
 
     const [alert, setAlert] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { register, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onChange' });
 
     const formSubmit = (values, event) => {
         event.preventDefault();
-        api.signin({
-            email: values.email,
-            password: values.password
-        }).then((data) => {
-            console.log(data)
+        setIsSubmitting(true);
 
-            setAlert({ isDisplay: true, message: 'Вход выполнен', type: 'success' });
+        handleSignIn({ email: values.email, password: values.password }).then((data) => {
+            setAlert({ isDisplay: true, message: data.message, type: 'success' });
             localStorage.setItem("jwt", data.token);
+            setIsSubmitting(false);
 
-            api.checkToken().then((res) => {
+            handleGetUserInfo().then((res) => {
                 if (res) {
                     setCurrentUser({ name: res.name, email: res.email, _id: res._id, isAuthed: true });
                     setIsLoggedIn(true);
                     navigate('/movies');
                 }
             }).catch((err) => {
-                console.log(err)
+                setAlert({ isDisplay: true, message: err.message, type: 'danger' });
+                setIsSubmitting(false);
             });
         }).catch((err) => {
-            setAlert({ isDisplay: true, message: err.message || 'Произошла ошибка при регистрации', type: 'danger' });
+            setAlert({ isDisplay: true, message: err.message, type: 'danger' });
+            setIsSubmitting(false);
         })
     }
 
@@ -63,10 +58,10 @@ const Login = (props) => {
                         <div className="input-box">
                             <label className="label">E-mail</label>
                             <input type="text" ref={email} className={errors.email ? 'input error-input' : 'input'} {...register("email", {
-                                required: "Заполните поле email",
+                                required: FIELD_REQUIRED,
                                 pattern: {
                                     value: /.+@[^@]+\.[^@]{2,}$/,
-                                    message: "Невалидный email"
+                                    message: EMAIL_NOT_VALID
                                 }
                             })} required />
                             {errors.email && <label className="error-message">{errors.email.message}</label>}
@@ -75,10 +70,10 @@ const Login = (props) => {
                             <label className="label">Пароль</label>
                             <input className={errors.password ? 'input error-input' : 'input'} ref={password} type="password" required
                                 {...register("password", {
-                                    required: "Введите пароль",
+                                    required: FIELD_REQUIRED,
                                     minLength: {
                                         value: 6,
-                                        message: "Минимум симвлолов 6"
+                                        message: SYMBOLS_MIN + ' 6'
                                     },
                                 })} />
                             {errors.password && <label className="error-message">{errors.password.message}</label>}
@@ -88,7 +83,7 @@ const Login = (props) => {
                     <ul className="auth-footer auth-footer-signin">
                         <Alert alert={alert} />
                         <li>
-                            <button className="auth-footer-register-button" disabled={!isValid}>Войти</button>
+                            <button className="auth-footer-register-button" disabled={isSubmitting || !isValid}>Войти</button>
                         </li>
                         <li className="auth-footer-text-muted">
                             Еще не зарегистрированы? <NavLink className="footer-signin" to="/signup">Регистрация</NavLink>

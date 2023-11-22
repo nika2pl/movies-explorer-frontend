@@ -1,49 +1,57 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from 'react-hook-form';
-import Api from '../../utils/MainApi'
 import Alert from "../Alert/Alert";
 
 import Header from "../Header/Header";
 import "./Profile.css";
 
-const api = new Api({
-    baseUrl: 'http://localhost:3000',
-    headers: {
-        'Content-Type': 'application/json'
-    }
-});
+import {
+    SYMBOLS_MIN,
+    SYMBOLS_MAX,
+    EMAIL_NOT_VALID,
+    SYMBOLS_NOT_ALLOWED
+} from "../../utils/Messages";
 
 const Profile = (props) => {
-    const { currentUser, isLoggedIn, resetLocalStorage } = props;
+    const { currentUser, isLoggedIn, handleLogout, handleUpdateProfile } = props;
 
     const navigate = useNavigate();
 
     const [isEditProfileActive, setIsEditProfileActive] = React.useState(false);
-    const { register, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onChange' });
-    const [alert, setAlert] = useState({});
+    const { reset, register, handleSubmit, formState: { errors, isDirty, isValid } } = useForm({ mode: 'onChange' });
+    const [noticeMessage, setNoticeMessage] = useState({});
 
     const [name, setName] = useState(currentUser.name);
     const [email, setEmail] = useState(currentUser.email);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    let defaultValues = {};
 
     useEffect(() => {
-        setName(currentUser.name)
-        setEmail(currentUser.email)
+        setName(currentUser.name);
+        setEmail(currentUser.email);
     }, [currentUser]);
 
+    useEffect(() => {
+        defaultValues.name = name;
+        defaultValues.email = email;
+        reset({ ...defaultValues });
+    }, [name, email]);
 
-    const formSubmit = (values, event) => {
+
+    const formSubmit = async (values, event) => {
         event.preventDefault();
-        setName(values.name)
-        setEmail(values.email)
+        setIsSubmitting(true);
 
-        api.editProfile({
-            name: values.name,
-            email: values.email
-        }).then((data) => {
-            setAlert({ isDisplay: true, message: 'Изменения приняты', type: 'success' });
+        handleUpdateProfile({ name: values.name, email: values.email }).then((data) => {
+            setName(values.name);
+            setEmail(values.email);
+            setNoticeMessage({ isDisplay: true, message: data, type: 'success' });
+            setIsSubmitting(false);
         }).catch((err) => {
-            setAlert({ isDisplay: true, message: err.message || 'Произошла ошибка при изменении данных', type: 'danger' });
+            setNoticeMessage({ isDisplay: true, message: err.message, type: 'danger' });
+            setIsSubmitting(false)
         })
     }
 
@@ -53,11 +61,6 @@ const Profile = (props) => {
         } else {
             setIsEditProfileActive(true);
         }
-    }
-
-    function handleSignOut() {
-        resetLocalStorage();
-        navigate('/signin');
     }
 
     return (
@@ -83,43 +86,41 @@ const Profile = (props) => {
                         <div className="input-list">
                             <div className="input-box">
                                 <label className="label">Имя</label>
-                                <input placeholder={name} className={errors.name ? 'input error-input' : 'input'} type="text" {...register("name", {
-                                    required: "Введите имя",
+                                <input className={errors.name ? 'input error-input' : 'input'} type="text" {...register("name", {
                                     minLength: {
                                         value: 2,
-                                        message: "Минимум символов 2"
+                                        message: SYMBOLS_MIN + " 2"
                                     },
                                     maxLength: {
                                         value: 30,
-                                        message: "Максимум символов 30"
+                                        message: SYMBOLS_MAX + " 30"
                                     },
                                     pattern: {
                                         value: /^[а-яА-Яa-zA-ZЁёәіңғүұқөһӘІҢҒҮҰҚӨҺ\-\s]*$/,
-                                        message: "Недопустимые символы"
+                                        message: SYMBOLS_NOT_ALLOWED
                                     }
                                 })}
-                                    required />
+                                />
                                 {errors.name && <label className="error-message">{errors.name.message}</label>}
                             </div>
 
                             <div className="input-box">
                                 <label className="label">E-mail</label>
-                                <input placeholder={email} type="text" className={errors.email ? 'input error-input' : 'input'} {...register("email", {
-                                    required: "Заполните поле email",
+                                <input type="text" className={errors.email ? 'input error-input' : 'input'} {...register("email", {
                                     pattern: {
                                         value: /.+@[^@]+\.[^@]{2,}$/,
-                                        message: "Невалидный email"
+                                        message: EMAIL_NOT_VALID
                                     }
-                                })} required />
+                                })} />
                                 {errors.email && <label className="error-message">{errors.email.message}</label>}
                             </div>
 
                         </div>
 
                         <ul className="auth-footer auth-footer-signin">
-                            <Alert alert={alert} />
+                            <Alert alert={noticeMessage} />
                             <li>
-                                <button className="auth-footer-register-button" disabled={!isValid}>Сохранить изменения</button>
+                                <button className="auth-footer-register-button" disabled={isSubmitting || !isDirty || !isValid} >Сохранить изменения</button>
                             </li>
                         </ul>
                     </form>
@@ -130,7 +131,7 @@ const Profile = (props) => {
                         <button className="profile__link profile__edit-button" onClick={handleEditProfile}>Редактировать</button>
                     </li>
                     <li>
-                        <button className="profile__link profile__edit-button profile__link-signout" onClick={handleSignOut}>Выйти из аккаунта</button>
+                        <button className="profile__link profile__edit-button profile__link-signout" onClick={() => { handleLogout(); navigate('/signin'); }}>Выйти из аккаунта</button>
                     </li>
                 </ul>
 

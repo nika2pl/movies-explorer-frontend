@@ -1,6 +1,8 @@
 export default class MoviesApi {
     constructor(options) {
-        this._headers = options.headers
+        this._headers = {
+            "Content-Type": "application/json",
+        }
     }
 
     _checkResponse(res) {

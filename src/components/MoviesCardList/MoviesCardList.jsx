@@ -1,65 +1,44 @@
-import React, { useEffect, useState } from "react";
-import "./MoviesCardList.css";
+import React from "react";
 import MoviesCard from "../MoviesCard/MoviesCard";
-import Api from '../../utils/MainApi'
+import "./MoviesCardList.css";
 
-const MoviesCardList = (props) => {
-    const [moviesData, setMoviesData] = useState([]);
+const MoviesCardList = ({movies, isMoreActive, moreCardsHandler, handleSaveMovie, isSavedMovies}) => {
+    let moviesArray;
 
-    const api = new Api();
-    
-    useEffect(() => {
-        api.savedMovies().then((data) => {
-            setMoviesData(data)
-        }).catch((err) => {
-            console.log(err);
-        })
-    }, []);
+    if (movies.length > 0) {
+        moviesArray = movies.map((item, i) => {
+            if(!isSavedMovies) item.movieId = item.id;
 
-    const movies = props.movies.map((item, i) => {
-        let isSavedId, isSaved;
-
-        if (props.isSavedMovies) {
-            isSaved = true;
-            isSavedId = item._id;
-        } else {
-            isSaved = moviesData.some((movie) => movie.movieId === item.id);
-
-            if (isSaved) {
-                isSavedId = moviesData.filter((movie) => movie.movieId === item.id)[0]._id;
-            }
-        }
-        
-        return (
-            <MoviesCard
-                cardId={i}
-                country={item.country}
-                director={item.director}
-                movieId={item.movieId ? item.movieId.toString() : item.id.toString()}
-                year={item.year}
-                description={item.description}
-                nameEN={item.nameEN}
-                nameRU={item.nameRU}
-                thumbnail={item.thumbnail || "https://api.nomoreparties.co" + item.image.formats.thumbnail.url}
-                duration={item.duration}
-                image={item.image.url ? "https://api.nomoreparties.co" + item.image.url : item.image}
-                trailerLink={item.trailerLink}
-                isSaved={isSaved}
-                isSavedId={isSavedId}
-                isSavedMovies={props.isSavedMovies}
-                handleDeleteMovie={props.handleDeleteMovie}
-            />
-        );
-    });
-
+            return (
+                <MoviesCard
+                    country={item.country}
+                    director={item.director}
+                    movieId={item.movieId.toString()}
+                    key={item.movieId}
+                    year={item.year}
+                    description={item.description}
+                    nameEN={item.nameEN}
+                    nameRU={item.nameRU}
+                    thumbnail={item.thumbnail || "https://api.nomoreparties.co" + item.image.formats.thumbnail.url}
+                    duration={item.duration}
+                    image={item.image.url ? "https://api.nomoreparties.co" + item.image.url : item.image}
+                    trailerLink={item.trailerLink}
+                    isSaved={item.isSaved}
+                    savedId={item.savedId || item._id}
+                    isSavedMovies={isSavedMovies}
+                    handleSaveMovie={handleSaveMovie}
+                />
+            );
+        });
+    }
     return (
         <>
             <div className="card-list">
-                {movies}
+                {moviesArray}
             </div>
-            {props.isMoreActive && (
+            {isMoreActive && (
                 <div className="card-more-button-container">
-                    <button className="card-more-button" onClick={props.moreCardsHandler}>Ещё</button>
+                    <button className="card-more-button" onClick={moreCardsHandler}>Ещё</button>
                 </div>
             )}
         </>

@@ -1,88 +1,71 @@
-import React, { useState, useEffect } from "react";
-
+import React from "react";
 import "./MoviesCard.css";
-import Api from '../../utils/MainApi'
 
-const MoviesCard = (props) => {
-    const api = new Api();
-     
+const MoviesCard = ({
+    isSavedMovies,
+    savedId,
+    isSaved,
+    handleSaveMovie,
+    country,
+    director,
+    movieId,
+    year,
+    description,
+    nameEN,
+    nameRU,
+    thumbnail,
+    duration,
+    image,
+    trailerLink,
+}) => {
+    let icon;
+
     const getTimeFromMins = (mins) => {
         let hours = Math.trunc(mins / 60);
         let minutes = mins % 60;
         return hours + 'ч ' + minutes + 'м';
     };
 
-    let save_icon;
-    const [isSaved, setIsSaved] = useState(false);
-    const [savedId, setSavedId] = useState('');
-
     const movieData = {
-        country: props.country,
-        director: props.director,
-        movieId: props.movieId,
-        year: props.year,
-        description: props.description,
-        nameEN: props.nameEN,
-        nameRU: props.nameRU,
-        thumbnail: props.thumbnail,
-        duration: props.duration,
-        image: props.image,
-        trailerLink: props.trailerLink,
+        country: country,
+        director: director,
+        movieId: movieId,
+        year: year,
+        description: description,
+        nameEN: nameEN,
+        nameRU: nameRU,
+        thumbnail: thumbnail,
+        duration: duration,
+        image: image,
+        trailerLink: trailerLink,
     };
 
-    const {
-        isSavedMovies,
-        isSavedId,
-        cardId,
-        handleDeleteMovie
-    } = props;
-
-    useEffect(() => {
-        setIsSaved(props.isSaved);
-        setSavedId(isSavedId)
-    }, [props.isSaved]);
-
-    const handleSaveMovie = (event) => {
-        if (!isSaved) {
-            api.saveMovie(movieData).then((data) => {
-                setSavedId(data._id);
-                setIsSaved(true);
-            }).catch((err) => {
-                console.log(err)
-            })
+    if (isSavedMovies) {
+        icon = <span className="delete-button" data-issaved={1} data-savedid={savedId} onClick={handleSaveMovie}></span>
+    } else {
+        if (isSaved) {
+            icon = <span className="saved-button" data-moviedata={JSON.stringify(movieData)} data-issaved={1} data-savedid={savedId} onClick={handleSaveMovie}></span>
         } else {
-            api.deleteMovie(savedId).then((data) => {
-                save_icon = <span className="saved-button" onClick={handleSaveMovie}></span>
-                setIsSaved(false);
-            }).catch((err) => {
-                console.log(err)
-            })
+            icon = <span className="save-button" data-moviedata={JSON.stringify(movieData)} data-issaved={0} onClick={handleSaveMovie}>Сохранить</span>
         }
     }
-    
-    let saved_icon;
-
-    saved_icon = <span className="saved-button" onClick={handleSaveMovie}></span>
-    save_icon = <span className="save-button" onClick={handleSaveMovie}>Сохранить</span>
-
-    if (isSavedMovies) {
-        saved_icon = <span className="delete-button" data-cardid={isSavedId} onClick={handleDeleteMovie}></span>
-    } 
 
     return (
-        <div className="card1" key={cardId}>
-            <span className="card-container">
-                <a href={movieData.trailerLink} className="cord-info-trailer-link" target="_blank" rel="noreferrer">
-                    <img src={movieData.image} alt={movieData.nameRU} />
+        <React.Fragment key={movieId}>
+            <div className="card" key={movieId}>
+                <span className="card-container">
+                    <a href={movieData.trailerLink} className="cord-info-trailer-link" target="_blank" rel="noreferrer">
+                        <img src={movieData.image} alt={movieData.nameRU} />
 
-                    <div className="card-info">
-                        <span className="card-title">{movieData.nameRU}</span>
-                        <span className="card-time">{getTimeFromMins(movieData.duration)}</span>
-                    </div>
-                </a>
-                {isSaved ? saved_icon : save_icon}
-            </span>
-        </div>
+                        <div className="card-info">
+                            <span className="card-title">{movieData.nameRU}</span>
+                            <span className="card-time">{getTimeFromMins(movieData.duration)}</span>
+                        </div>
+                    </a>
+                    {icon}
+                </span>
+            </div>
+        </React.Fragment>
     );
 };
 

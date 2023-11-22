@@ -8,105 +8,73 @@ import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import Preloader from "../Preloader/Preloader";
 import Filter from "../../utils/MoviesFilter";
 
-import Api from '../../utils/MainApi'
+import {
+  NO_DATA,
+  NOT_FOUND,
+  INTERNAL_ERROR
+} from "../../utils/Messages";
 
-const api = new Api({
-  baseUrl: 'http://localhost:3000',
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
-
-const Movies = ({ currentUser, isLoggedIn }) => {
-  const [isLoading, setIsLoading] = useState(false);
+const Movies = ({ currentUser, isLoggedIn, savedMoviesData, handleSaveMovie, isLoading, setIsLoading }) => {
   const [noticeMessage, setNoticeMessage] = useState('');
-  const [moviesData, setMoviesData] = useState([]);
-  const [filteredMoviesData, setFilteredMoviesData] = useState([]);
-  const [moviesDataFetched, setMoviesDataFetched] = useState([]);
-  const [checkbox, setCheckbox] = useState(JSON.parse(localStorage.getItem('shorts')) || false);
+  const [moviesDataFiltered, setMoviesDataFiltered] = useState([]);
+  const [checkbox, setCheckbox] = useState(false);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
-    api.getMovies().then((data) => {
-      renderCards(Filter.shorts(checkbox, data));
-      setMoviesData(data);
-      setMoviesDataFetched(data);
-    }).catch((err) => {
-      setNoticeMessage('Нет данных')
-      console.log(err);
-    })
-  }, []);
+    if (savedMoviesData) {
+      setMoviesDataFiltered(savedMoviesData);
+      renderCards(Filter.query(checkbox, query, savedMoviesData));
+    } else {
+      setNoticeMessage(NO_DATA)
+    }
+  }, [savedMoviesData]);
 
   const handleChangeInput = async (event) => {
     event.preventDefault();
     setIsLoading(true);
 
-    const movies = moviesData;
     const query = event.target.elements.query.value;
     const shorts = event.target.elements.shorts.checked;
 
-    let showMovies = Filter.query(shorts, query, movies);
+    setQuery(query);
+    setCheckbox(shorts);
 
+    const showMovies = Filter.query(shorts, query, savedMoviesData);
+    
+    setIsLoading(false);
     renderCards(showMovies)
   }
 
-  const handleCheckbox = async (event) => {
+  const handleChangeCheckbox = async (event) => {
+    setIsLoading(true);
+
     const shortsState = event.target.checked;
-    const showMovies = Filter.shorts(shortsState, moviesDataFetched);
+    const filteredArray = Filter.query(shortsState, query, savedMoviesData);
+
     localStorage.setItem("shorts", shortsState);
 
     setCheckbox(shortsState);
+    renderCards(filteredArray);
+    setIsLoading(false);
 
-    if (showMovies.length === 0 && shortsState) {
-      setFilteredMoviesData([]);
-      setNoticeMessage('Ничего не найдено');
-    } else if (showMovies.length > 0 && shortsState) {
-      renderCards(showMovies);
-    } else if (!shortsState) {
-      renderCards(moviesDataFetched);
+    if (filteredArray.length === 0 && shortsState) {
+      setNoticeMessage(NOT_FOUND);
     }
   }
 
-  function handleDeleteMovie(e) {
-    let savedId = e.target.dataset.cardid;
-
-    api.deleteMovie(savedId).then((data) => {
-      let r = moviesData.filter((m) => m._id !== savedId);
-
-      renderCards(r);
-
-      setFilteredMoviesData(r);
-      setMoviesData(r);
-      setMoviesDataFetched(r);
-    }).catch((err) => {
-      console.log(err)
-    })
-
-  }
-
-  const renderCards = async (showMovies) => {
+  const renderCards = async (movies) => {
     try {
-      if (checkbox) {
-        const filtered = moviesDataFetched.filter((movie) => {
-          return movie.duration < 40;
-        });
+      setMoviesDataFiltered(movies);
 
-        setFilteredMoviesData(showMovies);
-      } else {
-        setFilteredMoviesData(showMovies);
-      }
-
-      setIsLoading(false);
-
-      if (showMovies.length === 0) {
-        setNoticeMessage('Ничего не найдено');
+      if (movies.length === 0) {
+        setNoticeMessage(NOT_FOUND);
       } else {
         setNoticeMessage('');
       }
     } catch (e) {
-      setNoticeMessage("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз")
+      setNoticeMessage(INTERNAL_ERROR)
     }
   }
-
   return (
     <>
       <Header currentUser={currentUser} isLoggedIn={isLoggedIn} />
@@ -114,11 +82,11 @@ const Movies = ({ currentUser, isLoggedIn }) => {
       <main>
         <SearchForm
           handleChangeInput={handleChangeInput}
-          handleCheckbox={handleCheckbox}
+          handleChangeCheckbox={handleChangeCheckbox}
           checkbox={checkbox}
         />
 
-        {noticeMessage && (
+        {!isLoading && noticeMessage && (
           <h2 className="notice">{noticeMessage}</h2>
         )}
 
@@ -126,10 +94,10 @@ const Movies = ({ currentUser, isLoggedIn }) => {
           <Preloader />
         ) : (
           <MoviesCardList
-            movies={filteredMoviesData}
+            movies={moviesDataFiltered}
             isSavedMovies={true}
             isMoreActive={false}
-            handleDeleteMovie={handleDeleteMovie}
+            handleSaveMovie={handleSaveMovie}
           />
         )}
       </main>

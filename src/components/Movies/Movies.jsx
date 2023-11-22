@@ -6,133 +6,118 @@ import SearchForm from "../SearchForm/SearchForm";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import Preloader from "../Preloader/Preloader";
 import useWindowDimensions from '../../hooks/useWindowDimensions';
-import MoviesApi from "../../utils/MoviesApi";
 import Filter from "../../utils/MoviesFilter";
 
-const Movies = ({ currentUser, isLoggedIn }) => {
-  var beatFilmApi = new MoviesApi({
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  
-  const [isLoading, setIsLoading] = useState(false);
+import {
+  WIDTH_DESKTOP_MAX,
+  WIDTH_TABLET_LOADING_COUNT,
+  WIDTH_TABLET_INIT_COUNT,
+  WIDTH_TABLET_MAX,
+  WIDTH_MOBILE_LOADING_COUNT,
+  WIDTH_MOBILE_INIT_COUNT
+} from "../../utils/WidthConstrants";
+
+import {
+  ENTER_A_QUERY,
+  NOT_FOUND,
+  INTERNAL_ERROR
+} from "../../utils/Messages";
+
+const Movies = ({ currentUser, isLoggedIn, moviesData, handleSaveMovie, setIsLoading, isLoading }) => {
   const [isMoreActive, setIsMoreActive] = useState(false);
   const [noticeMessage, setNoticeMessage] = useState('Нужно ввести ключевое слово');
-  const [moviesData, setMoviesData] = useState([]);
-  const [moviesDataFetched, setMoviesDataFetched] = useState([]);
-  const [filteredMoviesData, setFilteredMoviesData] = useState(JSON.parse(localStorage.getItem('filtered')) || []);
+
+  const [query, setQuery] = useState(localStorage.getItem('query') || '');
+  const [checkbox, setCheckbox] = useState(JSON.parse(localStorage.getItem('shorts')) || false);
+
+  const [moviesDataFiltered, setMoviesDataFiltered] = useState([]);
   const { width } = useWindowDimensions();
 
   const [cardsToShowOnInitCount, setToShowOnInitCount] = useState(0);
   const [cardsToShowCount, setcardsToShowCount] = useState(0);
   const [cardsCount, setcardsCount] = useState(cardsToShowCount);
 
-  const [query, setQuery] = useState(localStorage.getItem('query') || '');
-  const [checkbox, setCheckbox] = useState(JSON.parse(localStorage.getItem('shorts')) || false);
-
   useEffect(() => {
-    if (width > 1280) {
-      setcardsToShowCount(12);
-      setToShowOnInitCount(12);
-    } else if (width > 768) {
-      setcardsToShowCount(8);
-      setToShowOnInitCount(8);
+    if (width > WIDTH_DESKTOP_MAX) {
+      setcardsToShowCount(WIDTH_TABLET_LOADING_COUNT);
+      setToShowOnInitCount(WIDTH_TABLET_INIT_COUNT);
+    } else if (width > WIDTH_TABLET_MAX) {
+      setcardsToShowCount(WIDTH_TABLET_LOADING_COUNT);
+      setToShowOnInitCount(WIDTH_TABLET_INIT_COUNT);
     } else {
-      setcardsToShowCount(2);
-      setToShowOnInitCount(5);
+      setcardsToShowCount(WIDTH_MOBILE_LOADING_COUNT);
+      setToShowOnInitCount(WIDTH_MOBILE_INIT_COUNT);
     }
-
-    setFilteredMoviesData(moviesData.slice(0, cardsToShowOnInitCount));
   }, [width]);
 
   useEffect(() => {
-    const filtered = JSON.parse(localStorage.getItem('filtered'));
+    const filteredArray = Filter.query(checkbox, query, moviesData)
+    renderCards(query, checkbox, filteredArray);
+  }, [cardsToShowOnInitCount, moviesData, checkbox, query]);
 
-    beatFilmApi.getMovies().then((data) => {
-      renderCards('', checkbox, data);
-
-      setMoviesDataFetched(data);
-      setMoviesData(data);
-
-      if (filtered.length > 0) {
-        renderCards(query, checkbox, filtered);
-        setMoviesData(filtered);
-      }
-    }).catch((err) => {
-      setNoticeMessage('Нет данных')
-    })
-  }, [cardsToShowOnInitCount]);
 
   const moreCardsHandler = async () => {
     const toShow = (cardsCount + cardsToShowCount);
+    const filteredArray = Filter.query(checkbox, query, moviesData)
 
     setcardsCount(toShow);
-    setFilteredMoviesData(moviesData.slice(0, toShow));
+    setMoviesDataFiltered(filteredArray.slice(0, toShow));
 
-    if (moviesData.length < toShow) {
+    if (filteredArray.length < toShow) {
       setIsMoreActive(false);
     }
   }
 
   const handleChangeInput = async (event) => {
     event.preventDefault();
-    setIsLoading(true);
-    setIsMoreActive(false);
-
-    const movies = await beatFilmApi.getMovies();
 
     const query = event.target.elements.query.value;
     const shorts = event.target.elements.shorts.checked;
+    const moviesDataFiltered = Filter.query(shorts, query, moviesData);
 
-    let showMovies = Filter.query(shorts, query, movies);
-
-    localStorage.setItem("filtered", JSON.stringify(showMovies));
+    setIsLoading(true);
+    setIsMoreActive(false);
     setQuery(query);
-    setMoviesDataFetched(showMovies);
-    renderCards(query, shorts, showMovies)
+
+    renderCards(query, shorts, moviesDataFiltered)
   }
 
-  const handleCheckbox = async (event) => {
+  const handleChangeCheckbox = async (event) => {
     const shortsState = event.target.checked;
 
-    const filtered = Filter.shorts(shortsState, moviesDataFetched);
-
-    localStorage.setItem("filtered", JSON.stringify(filtered));
+    const filteredArray = Filter.query(shortsState, query, moviesData);
 
     setCheckbox(shortsState);
-    renderCards('', shortsState, filtered);
+    renderCards(query, shortsState, filteredArray);
   }
 
-  const renderCards = async (query, shorts, showMovies) => {
+  const renderCards = async (query, shorts, moviesList) => {
     try {
       if (cardsToShowOnInitCount !== 0) {
-        if (query === '' && showMovies.length === 0) {
-          setNoticeMessage('Введите свой запрос');
+        if (query === '' && moviesList.length === 0) {
+          setNoticeMessage(ENTER_A_QUERY);
         } else {
           setNoticeMessage('');
         }
 
-        setIsLoading(false);
         setcardsCount(cardsToShowOnInitCount);
-        setMoviesData(showMovies);
-        setFilteredMoviesData(showMovies.slice(0, cardsToShowOnInitCount));
+        setMoviesDataFiltered(moviesList.slice(0, cardsToShowOnInitCount));
 
         localStorage.setItem("query", query);
         localStorage.setItem("shorts", shorts);
 
-        if (showMovies.length > cardsToShowOnInitCount || showMovies.length == cardsToShowOnInitCount) {
+        if (moviesList.length > cardsToShowOnInitCount || moviesList.length === cardsToShowOnInitCount) {
           setIsMoreActive(true);
-        }else{
+        } else {
           setIsMoreActive(false);
         }
 
-        if (showMovies.length === 0) {
-          setNoticeMessage('Ничего не найдено');
+        if (moviesList.length === 0) {
+          setNoticeMessage(NOT_FOUND);
         }
       }
     } catch (e) {
-      setNoticeMessage("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз")
+      setNoticeMessage(INTERNAL_ERROR)
     }
   }
 
@@ -143,12 +128,12 @@ const Movies = ({ currentUser, isLoggedIn }) => {
       <main>
         <SearchForm
           handleChangeInput={handleChangeInput}
-          handleCheckbox={handleCheckbox}
+          handleChangeCheckbox={handleChangeCheckbox}
           query={query}
           checkbox={checkbox}
         />
 
-        {noticeMessage && (
+        {!isLoading && noticeMessage && (
           <h2 className="notice">{noticeMessage}</h2>
         )}
 
@@ -156,10 +141,11 @@ const Movies = ({ currentUser, isLoggedIn }) => {
           <Preloader />
         ) : (
           <MoviesCardList
-            movies={filteredMoviesData}
+            movies={moviesDataFiltered}
             isSavedMovies={false}
             isMoreActive={isMoreActive}
             moreCardsHandler={moreCardsHandler}
+            handleSaveMovie={handleSaveMovie}
           />
         )}
       </main>

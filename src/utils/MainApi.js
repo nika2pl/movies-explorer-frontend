@@ -1,6 +1,6 @@
 export default class Api {
     constructor(options) {
-        this._url = 'http://localhost:3000' || options.baseUrl
+        this._url = 'https://api.moviex.nomoredomainsrocks.ru' || options.baseUrl
         this._headers = {
             "Content-Type": "application/json",
         }
@@ -17,7 +17,7 @@ export default class Api {
         })
     }
 
-    signup(data) {
+    signUp(data) {
         return fetch(this._url + '/signup', {
             method: 'POST',
             headers: this._headers,
@@ -26,7 +26,7 @@ export default class Api {
         }).then(this._checkResponse)
     }
 
-    signin(data) {
+    signIn(data) {
         return fetch(this._url + '/signin', {
             method: 'POST',
             headers: this._headers,
@@ -35,7 +35,7 @@ export default class Api {
         }).then(this._checkResponse)
     }
 
-    checkToken() {
+    getUserInfo() {
         return fetch(this._url + `/users/me`, {
             method: 'GET',
             credentials: "include",

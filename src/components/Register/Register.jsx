@@ -4,48 +4,41 @@ import { useForm } from 'react-hook-form';
 
 import "../Auth/Auth.css";
 import "../Input/Input.css";
-import "./Register.css";
 
 import Logo from "../../images/logo.svg";
-
-import Api from '../../utils/MainApi'
 import Alert from "../Alert/Alert";
 
-const api = new Api({
-    baseUrl: 'http://localhost:3000',
-    headers: {
-        'Content-Type': 'application/json'
-    }
-});
+import {
+    SYMBOLS_MIN,
+    SYMBOLS_MAX,
+    SYMBOLS_NOT_ALLOWED,
+    EMAIL_NOT_VALID,
+    FIELD_REQUIRED
+  } from "../../utils/Messages";
 
-const Register = (props) => {
+const Register = ({ setCurrentUser, setIsLoggedIn, handleSignUp, handleSignIn, handleGetUserInfo }) => {
     const name = React.useRef();
     const email = React.useRef();
     const password = React.useRef();
 
     const [alert, setAlert] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const navigate = useNavigate();
 
     const { register, handleSubmit, formState: { errors, isValid } } = useForm({ mode: 'onChange' });
 
-    const { setCurrentUser, setIsLoggedIn } = props;
-
     const formSubmit = (values, event) => {
         event.preventDefault();
-        api.signup({
-            name: values.name,
-            email: values.email,
-            password: values.password
-        }).then((data) => {
-            setAlert({ isDisplay: true, message: 'Регистрация прошла успешно', type: 'success' });
+        setIsSubmitting(true);
 
-            api.signin({
-                email: values.email,
-                password: values.password
-            }).then((data) => {
+        handleSignUp({ name: values.name, email: values.email, password: values.password }).then((data) => {
+            setAlert({ isDisplay: true, message: data.message, type: 'success' });
+
+            handleSignIn({ email: values.email, password: values.password }).then((data) => {
                 localStorage.setItem("jwt", data.token);
-    
-                api.checkToken().then((res) => {
+                setIsSubmitting(false);
+                handleGetUserInfo().then((res) => {
                     if (res) {
                         setCurrentUser({ name: res.name, email: res.email, _id: res._id, isAuthed: true });
                         setIsLoggedIn(true);
@@ -55,10 +48,12 @@ const Register = (props) => {
                     console.log(err)
                 });
             }).catch((err) => {
-                setAlert({ isDisplay: true, message: err.message || 'Произошла ошибка при регистрации', type: 'danger' });
+                setAlert({ isDisplay: true, message: err.message, type: 'danger' });
+                setIsSubmitting(false);
             })
         }).catch((err) => {
-            setAlert({ isDisplay: true, message: err.message || 'Произошла ошибка при регистрации', type: 'danger' });
+            setAlert({ isDisplay: true, message: err.message, type: 'danger' });
+            setIsSubmitting(false);
         })
     }
 
@@ -66,25 +61,25 @@ const Register = (props) => {
         <>
             <section className="auth">
                 <NavLink to="/"><img src={Logo} alt="На главную" /></NavLink>
-                <h1 className="auth__header">Рады видеть!</h1>
+                <h1 className="auth__header">Добро пожаловать!</h1>
 
                 <form onSubmit={handleSubmit(formSubmit)}>
-                <div className="input-list">
-                        <div className="input-box"> 
+                    <div className="input-list">
+                        <div className="input-box">
                             <label className="label">Имя</label>
                             <input className={errors.name ? 'input error-input' : 'input'} type="text" ref={name} {...register("name", {
-                                required: "Введите имя",
+                                required: FIELD_REQUIRED,
                                 minLength: {
                                     value: 2,
-                                    message: "Минимум симвлолов 2"
+                                    message: SYMBOLS_MIN+' 2'
                                 },
                                 maxLength: {
                                     value: 30,
-                                    message: "Максимум символов 30"
+                                    message: SYMBOLS_MAX+' 30'
                                 },
                                 pattern: {
                                     value: /^[а-яА-Яa-zA-ZЁёәіңғүұқөһӘІҢҒҮҰҚӨҺ\-\s]*$/,
-                                    message: "Недопустимые символы"
+                                    message: SYMBOLS_NOT_ALLOWED
                                 }
                             })}
                                 required />
@@ -93,10 +88,10 @@ const Register = (props) => {
                         <div className="input-box">
                             <label className="label">E-mail</label>
                             <input type="text" ref={email} className={errors.email ? 'input error-input' : 'input'} {...register("email", {
-                                required: "Заполните поле email",
+                                required: FIELD_REQUIRED,
                                 pattern: {
                                     value: /.+@[^@]+\.[^@]{2,}$/,
-                                    message: "Невалидный email"
+                                    message: EMAIL_NOT_VALID
                                 }
                             })} required />
                             {errors.email && <label className="error-message">{errors.email.message}</label>}
@@ -106,10 +101,10 @@ const Register = (props) => {
                             <label className="label">Пароль</label>
                             <input className={errors.password ? 'input error-input' : 'input'} ref={password} type="password" required
                                 {...register("password", {
-                                    required: "Введите пароль",
+                                    required: FIELD_REQUIRED,
                                     minLength: {
                                         value: 6,
-                                        message: "Минимум симвлолов 6"
+                                        message: SYMBOLS_MIN+' 6'
                                     },
                                 })} />
                             {errors.password && <label className="error-message">{errors.password.message}</label>}
@@ -119,10 +114,10 @@ const Register = (props) => {
                     <ul className="auth-footer auth-footer-signin">
                         <Alert alert={alert} />
                         <li>
-                            <button className="auth-footer-register-button" disabled={!isValid}>Зарегистрироватся</button>
+                            <button className="auth-footer-register-button" disabled={isSubmitting || !isValid}>Зарегистрироватся</button>
                         </li>
                         <li className="auth-footer-text-muted">
-                        Уже зарегистрированы? <NavLink className="footer-signin" to="/signin">Войти</NavLink>
+                            Уже зарегистрированы? <NavLink className="footer-signin" to="/signin">Войти</NavLink>
                         </li>
                     </ul>
                 </form>
