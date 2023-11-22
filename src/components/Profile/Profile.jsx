@@ -44,10 +44,10 @@ const Profile = (props) => {
         event.preventDefault();
         setIsSubmitting(true);
 
-        handleUpdateProfile({ name: values.name, email: values.email }).then((data) => {
+        handleUpdateProfile({ name: values.name, email: values.email }).then((res) => {
             setName(values.name);
             setEmail(values.email);
-            setNoticeMessage({ isDisplay: true, message: data, type: 'success' });
+            setNoticeMessage({ isDisplay: true, message: res.message, type: 'success' });
             setIsSubmitting(false);
         }).catch((err) => {
             setNoticeMessage({ isDisplay: true, message: err.message, type: 'danger' });

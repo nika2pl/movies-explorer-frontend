@@ -103,8 +103,8 @@ function App() {
   };
 
   const handleUpdateProfile = (data) => {
-    return api.editProfile(data).then((data) => {
-      return Promise.resolve(OK_CHANGED);
+    return api.editProfile(data).then(() => {
+      return Promise.resolve({ message: OK_CHANGED});
     }).catch((err) => {
       return Promise.reject({ message: err.message || ERROR_PROCESSING_DATA });
     })
@@ -119,7 +119,7 @@ function App() {
   }
 
   const handleSignUp = (data) => {
-    return api.signUp(data).then((data) => {
+    return api.signUp(data).then(() => {
       return Promise.resolve({ message: OK_REGISTERED });
     }).catch((err) => {
       return Promise.reject({ message: err.message || ERROR_PROCESSING_DATA });

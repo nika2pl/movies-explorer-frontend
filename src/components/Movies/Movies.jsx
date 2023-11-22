@@ -10,11 +10,13 @@ import Filter from "../../utils/MoviesFilter";
 
 import {
   WIDTH_DESKTOP_MAX,
-  WIDTH_TABLET_LOADING_COUNT,
-  WIDTH_TABLET_INIT_COUNT,
   WIDTH_TABLET_MAX,
-  WIDTH_MOBILE_LOADING_COUNT,
-  WIDTH_MOBILE_INIT_COUNT
+  CARDS_DESKTOP_INIT_COUNT,
+  CARDS_DESKTOP_LOADING_COUNT,
+  CARDS_TABLET_INIT_COUNT,
+  CARDS_TABLET_LOADING_COUNT,
+  CARDS_MOBILE_INIT_COUNT,
+  CARDS_MOBILE_LOADING_COUNT
 } from "../../utils/WidthConstrants";
 
 import {
@@ -33,37 +35,39 @@ const Movies = ({ currentUser, isLoggedIn, moviesData, handleSaveMovie, setIsLoa
   const [moviesDataFiltered, setMoviesDataFiltered] = useState([]);
   const { width } = useWindowDimensions();
 
-  const [cardsToShowOnInitCount, setToShowOnInitCount] = useState(0);
-  const [cardsToShowCount, setcardsToShowCount] = useState(0);
-  const [cardsCount, setcardsCount] = useState(cardsToShowCount);
+  const [cardsOnInitCount, setCardsOnInitCount] = useState(0);
+  const [cardsMoreCount, setMoreCardsCount] = useState(0);
+  const [cardsCount, setCardsCount] = useState(cardsMoreCount);
 
   useEffect(() => {
     if (width > WIDTH_DESKTOP_MAX) {
-      setcardsToShowCount(WIDTH_TABLET_LOADING_COUNT);
-      setToShowOnInitCount(WIDTH_TABLET_INIT_COUNT);
+      setMoreCardsCount(CARDS_DESKTOP_INIT_COUNT);
+      setCardsOnInitCount(CARDS_DESKTOP_LOADING_COUNT);
     } else if (width > WIDTH_TABLET_MAX) {
-      setcardsToShowCount(WIDTH_TABLET_LOADING_COUNT);
-      setToShowOnInitCount(WIDTH_TABLET_INIT_COUNT);
+      setMoreCardsCount(CARDS_TABLET_INIT_COUNT);
+      setCardsOnInitCount(CARDS_TABLET_LOADING_COUNT);
     } else {
-      setcardsToShowCount(WIDTH_MOBILE_LOADING_COUNT);
-      setToShowOnInitCount(WIDTH_MOBILE_INIT_COUNT);
+      setMoreCardsCount(CARDS_MOBILE_INIT_COUNT);
+      setCardsOnInitCount(CARDS_MOBILE_LOADING_COUNT);
     }
   }, [width]);
 
   useEffect(() => {
-    const filteredArray = Filter.query(checkbox, query, moviesData)
-    renderCards(query, checkbox, filteredArray);
-  }, [cardsToShowOnInitCount, moviesData, checkbox, query]);
+    const filteredArray = Filter.query(checkbox, query, moviesData);
+
+    console.log(filteredArray.length)
+    if (filteredArray.length > 0) renderCards(query, checkbox, filteredArray);
+  }, [cardsMoreCount, moviesData, checkbox, query]);
 
 
   const moreCardsHandler = async () => {
-    const toShow = (cardsCount + cardsToShowCount);
+    const totalCards = (cardsCount + cardsMoreCount);
     const filteredArray = Filter.query(checkbox, query, moviesData)
 
-    setcardsCount(toShow);
-    setMoviesDataFiltered(filteredArray.slice(0, toShow));
+    setCardsCount(totalCards);
+    setMoviesDataFiltered(filteredArray.slice(0, totalCards));
 
-    if (filteredArray.length < toShow) {
+    if (filteredArray.length < totalCards) {
       setIsMoreActive(false);
     }
   }
@@ -75,7 +79,6 @@ const Movies = ({ currentUser, isLoggedIn, moviesData, handleSaveMovie, setIsLoa
     const shorts = event.target.elements.shorts.checked;
     const moviesDataFiltered = Filter.query(shorts, query, moviesData);
 
-    setIsLoading(true);
     setIsMoreActive(false);
     setQuery(query);
 
@@ -93,27 +96,34 @@ const Movies = ({ currentUser, isLoggedIn, moviesData, handleSaveMovie, setIsLoa
 
   const renderCards = async (query, shorts, moviesList) => {
     try {
-      if (cardsToShowOnInitCount !== 0) {
+      if (cardsOnInitCount !== 0) {
+        let counted;
+        const totalCards = (cardsCount + cardsMoreCount);
+
         if (query === '' && moviesList.length === 0) {
           setNoticeMessage(ENTER_A_QUERY);
+        } else if (moviesList.length === 0) {
+          setNoticeMessage(NOT_FOUND);
         } else {
           setNoticeMessage('');
         }
 
-        setcardsCount(cardsToShowOnInitCount);
-        setMoviesDataFiltered(moviesList.slice(0, cardsToShowOnInitCount));
+        if (!isMoreActive) {
+          counted = cardsOnInitCount;
+        } else {
+          counted = cardsCount;
+        }
+    
+        setCardsCount(totalCards);
+        setMoviesDataFiltered(moviesList.slice(0, counted));
 
         localStorage.setItem("query", query);
         localStorage.setItem("shorts", shorts);
 
-        if (moviesList.length > cardsToShowOnInitCount || moviesList.length === cardsToShowOnInitCount) {
+        if (moviesList.length > cardsOnInitCount || moviesList.length === cardsOnInitCount) {
           setIsMoreActive(true);
         } else {
           setIsMoreActive(false);
-        }
-
-        if (moviesList.length === 0) {
-          setNoticeMessage(NOT_FOUND);
         }
       }
     } catch (e) {
