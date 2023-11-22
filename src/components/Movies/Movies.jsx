@@ -35,20 +35,20 @@ const Movies = ({ currentUser, isLoggedIn, moviesData, handleSaveMovie, setIsLoa
   const [moviesDataFiltered, setMoviesDataFiltered] = useState([]);
   const { width } = useWindowDimensions();
 
-  const [cardsOnInitCount, setCardsOnInitCount] = useState(0);
-  const [cardsMoreCount, setMoreCardsCount] = useState(0);
-  const [cardsCount, setCardsCount] = useState(cardsMoreCount);
+  const [onInitCardsCount, setOnInitCardsCount] = useState(0);
+  const [moreCardsCount, setMoreCardsCount] = useState(0);
+  const [cardsCount, setCardsCount] = useState(moreCardsCount);
 
   useEffect(() => {
     if (width > WIDTH_DESKTOP_MAX) {
       setMoreCardsCount(CARDS_DESKTOP_LOADING_COUNT);
-      setCardsOnInitCount(CARDS_DESKTOP_INIT_COUNT);
+      setOnInitCardsCount(CARDS_DESKTOP_INIT_COUNT);
     } else if (width > WIDTH_TABLET_MAX) {
       setMoreCardsCount(CARDS_TABLET_LOADING_COUNT);
-      setCardsOnInitCount(CARDS_TABLET_INIT_COUNT);
+      setOnInitCardsCount(CARDS_TABLET_INIT_COUNT);
     } else {
       setMoreCardsCount(CARDS_MOBILE_LOADING_COUNT);
-      setCardsOnInitCount(CARDS_MOBILE_INIT_COUNT);
+      setOnInitCardsCount(CARDS_MOBILE_INIT_COUNT);
     }
   }, [width]);
 
@@ -56,11 +56,11 @@ const Movies = ({ currentUser, isLoggedIn, moviesData, handleSaveMovie, setIsLoa
     const filteredArray = Filter.query(checkbox, query, moviesData);
 
     renderCards(query, checkbox, filteredArray);
-  }, [cardsOnInitCount, moviesData, checkbox, query]);
+  }, [onInitCardsCount, moviesData, checkbox, query]);
 
 
   const moreCardsHandler = async () => {
-    const totalCards = (cardsCount + cardsMoreCount);
+    const totalCards = (cardsCount + moreCardsCount);
     const filteredArray = Filter.query(checkbox, query, moviesData)
 
     setCardsCount(totalCards);
@@ -95,9 +95,9 @@ const Movies = ({ currentUser, isLoggedIn, moviesData, handleSaveMovie, setIsLoa
 
   const renderCards = async (query, shorts, moviesList) => {
     try {
-      if (cardsOnInitCount !== 0) {
+      if (onInitCardsCount !== 0) {
         let counted;
-        const totalCards = (cardsCount + cardsMoreCount);
+        const totalCards = (cardsCount + moreCardsCount);
 
         if (query === '' && moviesList.length === 0) {
           setNoticeMessage(ENTER_A_QUERY);
@@ -108,7 +108,7 @@ const Movies = ({ currentUser, isLoggedIn, moviesData, handleSaveMovie, setIsLoa
         }
 
         if (!isMoreActive) {
-          counted = cardsOnInitCount;
+          counted = onInitCardsCount;
         } else {
           counted = cardsCount;
         }
@@ -119,7 +119,7 @@ const Movies = ({ currentUser, isLoggedIn, moviesData, handleSaveMovie, setIsLoa
         localStorage.setItem("query", query);
         localStorage.setItem("shorts", shorts);
 
-        if (moviesList.length > cardsOnInitCount || moviesList.length === cardsOnInitCount) {
+        if (moviesList.length > onInitCardsCount || moviesList.length === onInitCardsCount) {
           setIsMoreActive(true);
         } else {
           setIsMoreActive(false);
