@@ -41,23 +41,22 @@ const Movies = ({ currentUser, isLoggedIn, moviesData, handleSaveMovie, setIsLoa
 
   useEffect(() => {
     if (width > WIDTH_DESKTOP_MAX) {
-      setMoreCardsCount(CARDS_DESKTOP_INIT_COUNT);
-      setCardsOnInitCount(CARDS_DESKTOP_LOADING_COUNT);
+      setMoreCardsCount(CARDS_DESKTOP_LOADING_COUNT);
+      setCardsOnInitCount(CARDS_DESKTOP_INIT_COUNT);
     } else if (width > WIDTH_TABLET_MAX) {
-      setMoreCardsCount(CARDS_TABLET_INIT_COUNT);
-      setCardsOnInitCount(CARDS_TABLET_LOADING_COUNT);
+      setMoreCardsCount(CARDS_TABLET_LOADING_COUNT);
+      setCardsOnInitCount(CARDS_TABLET_INIT_COUNT);
     } else {
-      setMoreCardsCount(CARDS_MOBILE_INIT_COUNT);
-      setCardsOnInitCount(CARDS_MOBILE_LOADING_COUNT);
+      setMoreCardsCount(CARDS_MOBILE_LOADING_COUNT);
+      setCardsOnInitCount(CARDS_MOBILE_INIT_COUNT);
     }
   }, [width]);
 
   useEffect(() => {
     const filteredArray = Filter.query(checkbox, query, moviesData);
 
-    console.log(filteredArray.length)
-    if (filteredArray.length > 0) renderCards(query, checkbox, filteredArray);
-  }, [cardsMoreCount, moviesData, checkbox, query]);
+    renderCards(query, checkbox, filteredArray);
+  }, [cardsOnInitCount, moviesData, checkbox, query]);
 
 
   const moreCardsHandler = async () => {
