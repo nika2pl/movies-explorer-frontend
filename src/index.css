@@ -1,0 +1,10 @@
+@import url('./vendor/normalize.css');
+@import url('./vendor/fonts/inter.css');
+
+a:hover {
+    opacity: 70%;
+}
+
+body {
+    background: #202020;
+}

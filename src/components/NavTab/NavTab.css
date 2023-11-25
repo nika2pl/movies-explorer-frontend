@@ -1,0 +1,130 @@
+.navtab {
+    margin-bottom: 30px;
+}
+
+.navtab-links {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit,80px);
+    justify-content: center;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.navtab-link {
+    background-color: #303030;
+    border-radius: 10px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: left;
+}
+
+.navtab-links__container {
+    background-color: #303030;
+    border-radius: 10px;
+    color: #fff;
+    height: 36px;
+    width: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* techs */
+
+.navtab-techs {
+    margin-top: 100px;
+}
+
+.navtab-techs-link-container {
+    background-color: #303030;
+    border-radius: 10px;
+    color: #fff;
+    height: 60px;
+    width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navtab-techs__link {
+    font-family: inter, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17px;
+    letter-spacing: -0.04em;
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+
+}
+
+.navtab-links_header {
+    display: flex;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .navtab-techs {
+        margin-top: 83px;
+    }
+
+    .navtab-techs__link {
+        font-family: inter, Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 15px;
+        letter-spacing: -0.04em;
+        text-align: center;
+    }
+
+    .navtab-links {
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .techs-info__title {
+        line-height: 51px;
+    }
+}
+
+@media (min-width: 768px) {
+    .navtab-links {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 350px) {
+        .navtab-links__container {
+        height: 26px;
+        width: 82px;
+    }
+
+    .navtab-link {
+        font-family: inter, Arial, sans-serif;
+        font-size: 10px;
+        font-weight: 500;
+        line-height: 16px;
+        letter-spacing: 0px;
+        text-align: left;
+    }
+
+    .navtab-links {
+        gap: 10px;
+        grid-template-columns: repeat(auto-fit, 84px);
+    }
+
+    .navtab-techs {
+        margin-top: 50px;
+        margin-left: 53px;
+        margin-right: 53px;
+    }
+
+    .navtab {
+        margin-bottom: 20px;
+    }
+}

@@ -1,0 +1,26 @@
+.alert {
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #ffffff;
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.alert-success {
+    background-color: #0c7124;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #710c0c;
+    border-color: #81374a;
+}
+
+.alert-show {
+    display: block;
+}
+
+.alert-hide {
+    display: none;
+}
